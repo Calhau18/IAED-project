@@ -20,6 +20,7 @@ int desc_compare(TreeNode*, TreeNode*);
 int val_compare(TreeNode*, TreeNode*);
 TreeNode* addchildren(TreeNode*, Item*);
 TreeNode* findchildren(TreeNode*, Item*);
+TreeNode* findnode(TreeNode*, char*);
 void deletenode(TreeNode*);
 void destroy_Tree(TreeNode*);
 

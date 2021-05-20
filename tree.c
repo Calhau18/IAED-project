@@ -31,6 +31,20 @@ TreeNode* findchildren(TreeNode* parent, Item* item){
     return Res->node;
 }
 
+TreeNode* findnode(TreeNode* root, char* path){
+    TreeNode* current_node = root, * new_node;
+    Item* item = newitem(NULL, NULL);
+    char* token = strtok(path, "/");
+    while(token != NULL){
+        changeitemdesc(item, token);
+        if((new_node = findchildren(current_node, item)) == NULL)
+            return NULL;
+        current_node = new_node;
+        token = strtok(NULL, "/");
+    }
+    return current_node;
+}
+
 void deletenode(TreeNode* node){
     if(node == NULL) return;
     if(!empty_AVL(node->alf_children)){
@@ -38,6 +52,8 @@ void deletenode(TreeNode* node){
         destroy_AVL(node->alf_children);
     }
     deleteitem(node->item);
+    free(node->hist_children);
+    free(node->alf_children);
     free(node);
 }
 
