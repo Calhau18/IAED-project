@@ -5,15 +5,15 @@
 
 typedef struct treenode TreeNode;
 
-typedef struct llnode {
+struct llnode {
     struct treenode* node;
     struct llnode* next;
-} LLNode;
+};
 
-typedef struct linkedlist {
+struct linkedlist {
     LLNode* start;
     LLNode* end;
-} LinkedList;
+};
 
 LinkedList* init_LL();
 int empty_LL(LinkedList*);

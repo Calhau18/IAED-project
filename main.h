@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "tree.h"
 
 /* Textos para o comando help. */
 #define HELP_TEXT "help: Imprime os comandos disponíveis.\n"
@@ -17,3 +16,62 @@
 #define NO_DATA "no data"
 /* Numero maximo de caracteres para o valor de um caminho. */
 #define MAX_DESCRIPTION 65535+1
+
+struct avlnode;
+struct llnode;
+
+typedef struct item {
+    char* description;
+    char* value;
+} Item;
+
+typedef struct treenode {
+    struct item* item;
+    struct avlnode* alf_children;
+    struct llnode* hist_children;
+} TreeNode;
+
+typedef struct avlnode {
+    struct treenode* node;
+    int depth;
+    struct avlnode *left, *right;
+} AVLNode;
+
+typedef struct llnode {
+    struct treenode* node;
+    struct llnode* next;
+} LLNode;
+
+/* Funções sobre árvores e nós de árvores. */
+TreeNode* newnode();
+int desc_compare(TreeNode*, TreeNode*);
+int val_compare(TreeNode*, TreeNode*);
+TreeNode* addchildren(TreeNode*, Item*);
+TreeNode* findchildren(TreeNode*, Item*);
+TreeNode* findnode(TreeNode*, char*);
+void deletenode(TreeNode*);
+void destroy_Tree(TreeNode*);
+
+/* Funções sobre AVL's e nós de AVL's. */
+AVLNode* init_AVL();
+AVLNode* addnode_AVL(AVLNode*, TreeNode*);
+AVLNode* findnode_AVL(AVLNode*, Item*);
+AVLNode* findmin_AVL(AVLNode*);
+AVLNode* findmax_AVL(AVLNode*);
+AVLNode* deletenode_AVL(AVLNode*, TreeNode*);
+void destroy_AVL(AVLNode*);
+
+/* Funções sobre linked lists e nós de linked lists. */
+LLNode* init_LL();
+LLNode* addnode_LL(LLNode*, TreeNode*);
+void print_LL(LLNode*);
+LLNode* deletenode_LL(LLNode*, TreeNode*);
+void destroy_LL(LLNode*);
+
+/* Funções sobre items. */
+Item* newitem(char*, char*);
+void changeitemdesc(Item*, char*);
+void changeitemval(Item*, char*);
+int desc_itemcompare(Item*, Item*);
+int val_itemcompare(Item*, Item*);
+void deleteitem(Item*);
