@@ -1,8 +1,8 @@
 #include "AVL.h"
 
-AVLNode* newnode(Item item, AVLNode* l, AVLNode* r){
+AVLNode* newnode_AVL(TreeNode* node, AVLNode* l, AVLNode* r){
     AVLNode* new_node = (AVLNode*) malloc(sizeof(AVLNode));
-    new_node->item = item;
+    new_node->node = node;
     new_node->depth = 0;
     new_node->left = l;
     new_node->right = r;
@@ -18,7 +18,7 @@ int depth(AVLNode* node){
 }
 
 int balance_factor(AVLNode* node){
-    if(h == NULL) return 0;
+    if(node == NULL) return 0;
     return depth(node->left) - depth(node->right);
 }
 
@@ -68,23 +68,31 @@ AVLNode* balance(AVLNode* tree){
     return tree;   
 }
 
-AVLNode* addnode_AVL(AVLNode* tree, Item item){
+AVLNode* init_AVL(){
+    return NULL;
+}
+
+int empty_AVL(AVLNode* root){
+    return root == NULL;
+}
+
+AVLNode* addnode_AVL(AVLNode* tree, TreeNode* node){
     if(tree == NULL){
-        return newnode(item, NULL, NULL);
-    }else if(compare(item, tree->item)==0){
-        return newnode(item, tree->left, tree->right);
-    }else if(compare(item, tree->item)>0){
-        tree->right = addnode(tree->right, new);
-    }else if(compare(item, tree->item)<0){
-        tree->left = addnode(tree->left, new);
+        return newnode_AVL(node, NULL, NULL);
+    }else if(desc_compare(node, tree->node)==0){
+        return newnode_AVL(node, tree->left, tree->right);
+    }else if(desc_compare(node, tree->node)>0){
+        tree->right = addnode_AVL(tree->right, node);
+    }else if(desc_compare(node, tree->node)<0){
+        tree->left = addnode_AVL(tree->left, node);
     }
     return balance(tree);
 }
 
-AVLNode* findnode_AVL(AVLNode* tree, AVLNode* node){
+AVLNode* findnode_AVL(AVLNode* tree, Item* item){
     AVLNode* x = tree;
-    while(x!=NULL && compare(x, node))
-        if(compare(x, node)<0)
+    while(x!=NULL && desc_itemcompare(x->node->item, item))
+        if(desc_itemcompare(x->node->item, item)<0)
             x = x->right;
         else
             x = x->left;
@@ -105,27 +113,34 @@ AVLNode* findmax_AVL(AVLNode* tree){
     return tree;
 }
 
-AVLNode* deletenode_AVL(AVLNode* tree, AVLNode* node){
-    AVLNode M, delete;
+AVLNode* deletenode_AVL(AVLNode* tree, TreeNode* node){
+    AVLNode *M, *delete;
     if(tree == NULL) 
         return tree;
-    else if(compare(node, tree)>0) 
-        tree->right = deletenode(tree->right, node);
-    else if(compare(node, tree)<0) 
-        tree->left = deletenode(tree->left, node);
+    else if(desc_compare(node, tree->node)>0) 
+        tree->right = deletenode_AVL(tree->right, node);
+    else if(desc_compare(node, tree->node)<0) 
+        tree->left = deletenode_AVL(tree->left, node);
     else{
         if(tree->left != NULL && tree->right != NULL){
-            M = findmax(tree->left);
-            tree->item = M->item;
-            tree->left = deletenode(tree->left, M);
+            M = findmax_AVL(tree->left);
+            tree->node = M->node;
+            tree->left = deletenode_AVL(tree->left, M->node);
         }else{
             delete = tree;
             if(tree->left != NULL)
                 tree = tree->left;
             tree = tree->right;
-            deleteItem(delete->item);
+            deletenode(delete->node);
             free(delete);
         }
     }
     return tree;
+}
+
+void destroy_AVL(AVLNode* root){
+    if(root == NULL) return;
+    destroy_AVL(root->left);
+    destroy_AVL(root->right);
+    deletenode_AVL(root, root->node);
 }
