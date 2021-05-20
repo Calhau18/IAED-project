@@ -9,8 +9,18 @@ Item* newitem(char* desc, char* val){
     if(desc != NULL){
         Res->description = (char*) malloc(sizeof(char)*(strlen(desc)+1));
         strcpy(Res->description, desc);
-    }else Res->value = NULL;
+    }else Res->description = NULL;
     return Res;
+}
+
+void changeitemdesc(Item* item, char* desc){
+    item->description = (char*) realloc(item->description, sizeof(char)*(strlen(desc)+1));
+    strcpy(item->description, desc);
+}
+
+void changeitemval(Item* item, char val[]){
+    item->value = (char*) realloc(item->value, sizeof(char)*(strlen(val)+1));
+    strcpy(item->value, val);
 }
 
 int desc_itemcompare(Item* A, Item* B){

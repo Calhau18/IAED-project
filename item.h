@@ -11,6 +11,8 @@ typedef struct item {
 } Item;
 
 Item* newitem(char*, char*);
+void changeitemdesc(Item*, char*);
+void changeitemval(Item*, char*);
 int desc_itemcompare(Item*, Item*);
 int val_itemcompare(Item*, Item*);
 void deleteitem(Item*);
