@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "linkedlist.h"
 
 /* Cria um novo (LL)nó com valor node e a apontar para NULL. 
@@ -34,6 +35,14 @@ LinkedList* push_LL(LinkedList* L, TreeNode* node){
     return L;
 }
 
+void print_LL(LinkedList* L){
+    LLNode* x = L->start;
+    while(x != NULL){
+        printf("%s\n", x->node->item->description);
+        x = x->next;
+    }
+}
+
 /* Apaga o nó da linked list L com o valor node. Se não encontrar tal nó devolve 
    NULL, caso contrário devolve um ponteiro para L. */
 LinkedList* deletenode_LL(LinkedList* L, TreeNode* node){
@@ -43,9 +52,9 @@ LinkedList* deletenode_LL(LinkedList* L, TreeNode* node){
         if(desc_compare(x->node, node))
             x = x->next;
         else{
-            deletenode(x->node);
             if(x != L->start) prev->next = x->next;
             else L->start = L->start->next;
+            deletenode(x->node);
             free(x);
             return L;
         }
@@ -55,5 +64,7 @@ LinkedList* deletenode_LL(LinkedList* L, TreeNode* node){
 
 /* Liberta toda a memória associada à linked list L. */
 void destroy_LL(LinkedList* L){
-    while(L->start != NULL) deletenode_LL(L, L->start->node);
+    while(L->start != NULL) 
+        deletenode_LL(L, L->start->node);
+    free(L); L = NULL;
 }
