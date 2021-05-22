@@ -1,7 +1,6 @@
 #include "main.h"
 
-/* Cria um novo (LL)nó com valor node e a apontar para NULL. 
-   Devolve um ponteiro para o novo nó. */
+/* Creates a new LL node with value node and pointing to NULL. */
 LLNode* newnode_LL(TreeNode* node){
     LLNode* new_node = (LLNode*) malloc(sizeof(LLNode));
     new_node->node = node;
@@ -9,8 +8,7 @@ LLNode* newnode_LL(TreeNode* node){
     return new_node;
 }
 
-/* Insere um nó numa linked list com valor node, a seguir a L. Devolve um 
-   ponteiro para o nó inserido. */
+/* Adds a LL node, replacing L if L is NULL and following L otherwise. */
 LLNode* addnode_LL(LLNode* L, TreeNode* node){
     LLNode* new_node = newnode_LL(node);
     if(L == NULL) L = new_node;
@@ -21,7 +19,7 @@ LLNode* addnode_LL(LLNode* L, TreeNode* node){
     return new_node;
 }
 
-/* Imprime a descrição de todos os nós na linked list a partir de node. */
+/* Prints the description of every LL node following node. */
 void print_LL(LLNode* node){
     while(node != NULL){
         printf("%s\n", node->node->item->description);
@@ -29,22 +27,25 @@ void print_LL(LLNode* node){
     }
 }
 
-/* Apaga o nó da linked list L com o valor node. Se não encontrar tal nó devolve 
-   NULL, caso contrário devolve um ponteiro para L. */
+/* Deletes the LL node that follows L and holds a tree node node. Returns L if
+   there is such node and NULL otherwise.
+   Note: this function shall always be called before a deletenode_AVL call.
+   Since, for every tree node X there is a LL and an AVL holding X's children,
+   deleting X's children in both structures would be redundant. Line 40 is 
+   therefore commented. */
 LLNode* deletenode_LL(LLNode* L, TreeNode* node){
     if(L == NULL) return NULL;
     if(!desc_compare(L->node, node)){
         LLNode* X = L->next;
-        /*deletenode(L->node);*/
+        /* deletenode(L->node); */
         free(L);
-        L = NULL;
         return X;
     }
     L->next = deletenode_LL(L->next, node);
     return L;
 }
 
-/* Liberta toda a memória da linked list a partir de L. */
+/* Deletes the linked list starting with the LL node L. */
 void destroy_LL(LLNode* L){
     if(L==NULL) return;
     destroy_LL(L->next);

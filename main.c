@@ -1,5 +1,8 @@
 #include "main.h"
 
+/* Reads a path and a value. Adds a folder with such path and such value to
+   the tree rooted at root, if there is none, or modifies the value of the 
+   folder with such path, otherwise. */
 void set(TreeNode* root){
     char path[MAX_DESCRIPTION], value[MAX_DESCRIPTION]; char* token;
     TreeNode* current_node = root, * new_node;
@@ -19,6 +22,7 @@ void set(TreeNode* root){
     changeitemval(current_node->item, value);
 }
 
+/* Prints all paths and values by creation order of every component. */
 void print(TreeNode* root, char* path){
     LLNode* x = root->first; Item* item;
     char* new_path = NULL;
@@ -36,6 +40,9 @@ void print(TreeNode* root, char* path){
     free(new_path);
 }
 
+/* Reads a path and looks for a node with such path in the tree rooted at root.
+   Returns the value of that node, if there is such, NO_DATA if there is such
+   node but it has no value, and NOT_FOUND if there is no such node. */
 char* find(TreeNode* root){
     char path[MAX_DESCRIPTION];
     TreeNode* node;
@@ -44,6 +51,9 @@ char* find(TreeNode* root){
     return node->item->value == NULL ? NO_DATA : node->item->value;
 }
 
+/* Reads a path and looks for a node with such path in the tree rooted at root.
+   Prints the description of the children of that node (in alphabetical order), 
+   if there is such, and NOT_FOUND otherwise. */
 void list(TreeNode* root){
     char path[MAX_DESCRIPTION];
     TreeNode* node;
@@ -57,6 +67,8 @@ void list(TreeNode* root){
     else print_AVL(node->alf_children);
 }
 
+/* Looks for a node with the given value. Returns a string with it's path if 
+   there is such node, and NOT_FOUND otherwise. */
 char* search(TreeNode* root, char* value, char* path){
     char* new_path = NULL, * res;
     LLNode* x = root->first; Item* item;
@@ -66,8 +78,11 @@ char* search(TreeNode* root, char* value, char* path){
             sizeof(char)*(strlen(path)+strlen(item->description)+2));
         strcpy(new_path, path); strcat(new_path, "/");
         strcat(new_path, item->description);
-        if(item->value != NULL && !strcmp(item->value, value))
+        if(item->value != NULL && !strcmp(item->value, value)){
+            new_path = realloc(new_path, sizeof(char)*(strlen(new_path)+2));
+            strcat(new_path, "\n");
             return new_path;
+        }
         if(strcmp((res = search(x->node, value, new_path)), NOT_FOUND))
             return res;
         x = x->next;
@@ -76,6 +91,8 @@ char* search(TreeNode* root, char* value, char* path){
     return NOT_FOUND;
 }
 
+/* Reads a path and looks for a tree node with such path. If there is such, 
+   deletes it and all it's offspring, and prints NOT_FOUND otherwise. */
 void delete(TreeNode** root){
     char path[MAX_DESCRIPTION];
     TreeNode* node;
@@ -95,14 +112,12 @@ void delete(TreeNode** root){
     }else{
         destroy_Tree(node);
     }
-    /* note-se que o deletenode_AVL destroi a diretoria. */
 }
 
 int main(){
-    /* Comando lido. */
+    /* Strings to hold the command and a value for the command search. */
     char command[7], value[MAX_DESCRIPTION];
-    /* Árvore que guarda os componentes do sistema, de acordo com a sua 
-    hierarquia. */
+    /* Tree that holds all directories in the system and their hierarchy. */
     TreeNode* Root = newnode();
     while(scanf("%s", command) == 1){
         if(!strcmp(command, "help")){
@@ -121,7 +136,7 @@ int main(){
             list(Root);
         }else if(!strcmp(command, "search")){
             getchar(); fgets(value, MAX_DESCRIPTION, stdin);
-            printf("%s\n", search(Root, value, ""));
+            printf("%s", search(Root, value, ""));
         }else if(!strcmp(command, "delete")){
             delete(&Root);
         }

@@ -1,5 +1,6 @@
 #include "main.h"
 
+/* Creates a tree node with NULL in all components. */
 TreeNode* newnode(){
     TreeNode* Res = (TreeNode*) malloc(sizeof(TreeNode));
     Res->item = NULL;
@@ -10,16 +11,18 @@ TreeNode* newnode(){
     return Res;
 }
 
+/* Compares two tree nodes' descriptions. */
 int desc_compare(TreeNode* A, TreeNode* B){
-    if(A == NULL || B == NULL) return (A == NULL && B == NULL);
     return desc_itemcompare(A->item, B->item);
 }
 
+/* Compares two tree nodes' values. */
 int val_compare(TreeNode* A, TreeNode* B){
-    if(A == NULL || B == NULL) return A == NULL && B == NULL;
     return val_itemcompare(A->item, B->item);
 }
 
+/* !!!!!!!!!!! */
+/* Adds a children to the tree node parent with item's value and description. */
 TreeNode* addchildren(TreeNode* parent, Item* item){
     TreeNode* new_node = newnode();
     new_node->item = copyitem(item);
@@ -30,13 +33,16 @@ TreeNode* addchildren(TreeNode* parent, Item* item){
     return new_node;
 }
 
+/* Looks for a children of the tree node parent with the same description as
+   item. Returns that node if there is such, and NULL otherwise. */
 TreeNode* findchildren(TreeNode* parent, Item* item){
-    AVLNode* Res;
-    Res = findnode_AVL(parent->alf_children, item);
+    AVLNode* Res = findnode_AVL(parent->alf_children, item);
     if(Res == NULL) return NULL;
     return Res->node;
 }
 
+/* Looks for a tree node in the tree rooted at root with a path given by the
+   string path. Returns that node if there is such, and NULL otherwise. */
 TreeNode* findnode(TreeNode* root, char* path){
     TreeNode* current_node = root, * new_node;
     Item* item = newitem();
@@ -54,6 +60,7 @@ TreeNode* findnode(TreeNode* root, char* path){
     return current_node;
 }
 
+/* Deletes the tree node node and all it's offspring. */
 void deletenode(TreeNode* node){
     if(node == NULL) return;
     if(node->alf_children != NULL){
@@ -64,6 +71,7 @@ void deletenode(TreeNode* node){
     free(node);
 }
 
+/* Destroys the tree rooted at root. */
 void destroy_Tree(TreeNode* root){
     deletenode(root);
 }

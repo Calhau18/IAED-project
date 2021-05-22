@@ -1,5 +1,6 @@
 #include "main.h"
 
+/* Creates an AVL node with children l and r and value node. */
 AVLNode* newnode_AVL(TreeNode* node, AVLNode* l, AVLNode* r){
     AVLNode* new_node = (AVLNode*) malloc(sizeof(AVLNode));
     new_node->node = node;
@@ -9,19 +10,22 @@ AVLNode* newnode_AVL(TreeNode* node, AVLNode* l, AVLNode* r){
     return new_node;
 }
 
+/* Returns the bigger of integers a and b. */
 int max(int a, int b){
     return a>b ? a : b;
 }
 
+/* Returns the depth of AVL node node. */
 int depth(AVLNode* node){
     return node == NULL ? -1 : node->depth;
 }
 
+/* Returns the balance factor of AVL node node. */
 int balance_factor(AVLNode* node){
-    if(node == NULL) return 0;
     return depth(node->left) - depth(node->right);
 }
 
+/* AVL left rotation on AVL node node. */
 AVLNode* rotate_left(AVLNode* node){
     AVLNode* x = node->right;
     node->right = x->left;
@@ -31,6 +35,7 @@ AVLNode* rotate_left(AVLNode* node){
     return x;
 }
 
+/* AVL right rotation on AVL node node. */
 AVLNode* rotate_right(AVLNode* node){
     AVLNode* x = node->left;
     node->left = x->right;
@@ -40,18 +45,21 @@ AVLNode* rotate_right(AVLNode* node){
     return x;
 }
 
+/* AVL left-right rotation on AVL node node. */
 AVLNode* rotate_LR(AVLNode* node){
     if(node == NULL) return node;
     node->left = rotate_left(node->left);
     return rotate_right(node);
 }
 
+/* AVL right-left rotation on AVL node node. */
 AVLNode* rotate_RL(AVLNode* node){
     if(node == NULL) return node;
     node->right = rotate_right(node->right);
     return rotate_left(node);
 }
 
+/* Balances the AVL with tree as root. */
 AVLNode* balance(AVLNode* tree){
     if(tree == NULL) return tree;
     if(balance_factor(tree) > 1){
@@ -70,30 +78,30 @@ AVLNode* balance(AVLNode* tree){
     return tree;   
 }
 
+/* Adds a node with value node to the AVL with root at tree. */
 AVLNode* addnode_AVL(AVLNode* tree, TreeNode* node){
-    if(tree == NULL){
-        return newnode_AVL(node, NULL, NULL);
-    }else if(desc_compare(node, tree->node)==0){
+    int dif;
+    if(tree == NULL) return newnode_AVL(node, NULL, NULL);
+    else if((dif = desc_compare(node, tree->node)) == 0)
         return newnode_AVL(node, tree->left, tree->right);
-    }else if(desc_compare(node, tree->node)>0){
+    else if(dif > 0)
         tree->right = addnode_AVL(tree->right, node);
-    }else if(desc_compare(node, tree->node)<0){
+    else if(dif < 0)
         tree->left = addnode_AVL(tree->left, node);
-    }
-    tree = balance(tree);
-    return tree;
+    return balance(tree);
 }
 
+/* Finds a node in the AVL with rooted at tree with the same description as item. */
 AVLNode* findnode_AVL(AVLNode* tree, Item* item){
     AVLNode* x = tree; int dif;
-    while(x!=NULL && (dif = desc_itemcompare(x->node->item, item)))
-        if(dif<0)
-            x = x->right;
-        else
-            x = x->left;
+    while(x != NULL && (dif = desc_itemcompare(x->node->item, item)))
+        if(dif<0) x = x->right;
+        else      x = x->left;
     return x;
 }
 
+/* Prints the description of all nodes in the AVL rooted at root in 
+   alphabetical order. */
 void print_AVL(AVLNode* root){
     if(root == NULL) return;
     print_AVL(root->left);
@@ -101,26 +109,32 @@ void print_AVL(AVLNode* root){
     print_AVL(root->right);
 }
 
-AVLNode* findmin_AVL(AVLNode* tree){
-    while(tree->left!=NULL){
-        tree = tree->left;
+/* Finds the node with the smallest value in the AVL rooted at root, following
+   the comparison criterium for the AVL. */
+AVLNode* findmin_AVL(AVLNode* root){
+    while(root->left!=NULL){
+        root = root->left;
     }
-    return tree;
+    return root;
 }
 
-AVLNode* findmax_AVL(AVLNode* tree){
-    while(tree->right != NULL){
-        tree = tree->right;
+/* Finds the node with the biggest value in the AVL rooted at root, following
+   the comparison criterium for the AVL. */
+AVLNode* findmax_AVL(AVLNode* root){
+    while(root->right != NULL){
+        root = root->right;
     }
-    return tree;
+    return root;
 }
 
+/* Creates and returns a duplicate of string string. */
 char* strdup(char* string){
     char * res = (char*) malloc(sizeof(char)*(strlen(string)+1));
     strcpy(res, string);
     return res;
 }
 
+/* Deletes the AVL node holding node from the AVL rooted at avl. */
 AVLNode* deletenode_AVL(AVLNode* avl, TreeNode* node){
     AVLNode *M, *delete; int dif;
     if(avl == NULL) return NULL;
@@ -149,6 +163,7 @@ AVLNode* deletenode_AVL(AVLNode* avl, TreeNode* node){
     return balance(avl);
 }
 
+/* Destroys the AVL rooted at root (deletes the root and all it's children). */
 void destroy_AVL(AVLNode* root){
     if(root == NULL) return;
     destroy_AVL(root->left); root->left = NULL;
