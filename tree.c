@@ -1,26 +1,32 @@
-#include "tree.h"
+#include "main.h"
 
 TreeNode* newnode(){
     TreeNode* Res = (TreeNode*) malloc(sizeof(TreeNode));
-    Res->item = newitem(NULL, NULL);
-    Res->alf_children = init_AVL();
-    Res->hist_children = init_LL();
+    Res->item = NULL;
+    Res->parent = NULL;
+    Res->alf_children = NULL;
+    Res->first = NULL;
+    Res->last = NULL;
     return Res;
 }
 
 int desc_compare(TreeNode* A, TreeNode* B){
+    if(A == NULL || B == NULL) return (A == NULL && B == NULL);
     return desc_itemcompare(A->item, B->item);
 }
 
 int val_compare(TreeNode* A, TreeNode* B){
+    if(A == NULL || B == NULL) return A == NULL && B == NULL;
     return val_itemcompare(A->item, B->item);
 }
 
 TreeNode* addchildren(TreeNode* parent, Item* item){
     TreeNode* new_node = newnode();
-    new_node->item = item;
-    addnode_AVL(parent->alf_children, new_node);
-    push_LL(parent->hist_children, new_node);
+    new_node->item = copyitem(item);
+    new_node->parent = parent;
+    parent->alf_children = addnode_AVL(parent->alf_children, new_node);
+    parent->last = addnode_LL(parent->last, new_node);
+    if(parent->first == NULL) parent->first = parent->last;
     return new_node;
 }
 
@@ -33,27 +39,28 @@ TreeNode* findchildren(TreeNode* parent, Item* item){
 
 TreeNode* findnode(TreeNode* root, char* path){
     TreeNode* current_node = root, * new_node;
-    Item* item = newitem(NULL, NULL);
+    Item* item = newitem();
     char* token = strtok(path, "/");
     while(token != NULL){
         changeitemdesc(item, token);
-        if((new_node = findchildren(current_node, item)) == NULL)
+        if((new_node = findchildren(current_node, item)) == NULL){
+            deleteitem(item);
             return NULL;
+        }
         current_node = new_node;
         token = strtok(NULL, "/");
     }
+    deleteitem(item);
     return current_node;
 }
 
 void deletenode(TreeNode* node){
     if(node == NULL) return;
-    if(!empty_AVL(node->alf_children)){
-        destroy_LL(node->hist_children);
+    if(node->alf_children != NULL){
+        destroy_LL(node->first);
         destroy_AVL(node->alf_children);
     }
     deleteitem(node->item);
-    free(node->hist_children);
-    free(node->alf_children);
     free(node);
 }
 

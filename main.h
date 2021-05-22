@@ -8,12 +8,12 @@
 #define SET_TEXT "set: Adiciona ou modifica o valor a armazenar.\n"
 #define PRINT_TEXT "print: Imprime todos os caminhos e valores.\n"
 #define FIND_TEXT "find: Imprime o valor armazenado.\n"
-#define LIST_TEXT "list: Lista todos os componentes de um caminho.\n"
+#define LIST_TEXT "list: Lista todos os componentes imediatos de um sub-caminho.\n"
 #define SEARCH_TEXT "search: Procura o caminho dado um valor.\n"
 #define DELETE_TEXT "delete: Apaga um caminho e todos os subcaminhos.\n"
 /* Textos de erro. */
-#define NOT_FOUND "not found"
-#define NO_DATA "no data"
+#define NOT_FOUND "not found\n"
+#define NO_DATA "no data\n"
 /* Numero maximo de caracteres para o valor de um caminho. */
 #define MAX_DESCRIPTION 65535+1
 
@@ -26,9 +26,10 @@ typedef struct item {
 } Item;
 
 typedef struct treenode {
+    struct treenode* parent;
     struct item* item;
     struct avlnode* alf_children;
-    struct llnode* hist_children;
+    struct llnode* first, * last;
 } TreeNode;
 
 typedef struct avlnode {
@@ -53,25 +54,25 @@ void deletenode(TreeNode*);
 void destroy_Tree(TreeNode*);
 
 /* Funções sobre AVL's e nós de AVL's. */
-AVLNode* init_AVL();
 AVLNode* addnode_AVL(AVLNode*, TreeNode*);
 AVLNode* findnode_AVL(AVLNode*, Item*);
+void print_AVL(AVLNode*);
 AVLNode* findmin_AVL(AVLNode*);
 AVLNode* findmax_AVL(AVLNode*);
 AVLNode* deletenode_AVL(AVLNode*, TreeNode*);
 void destroy_AVL(AVLNode*);
 
 /* Funções sobre linked lists e nós de linked lists. */
-LLNode* init_LL();
 LLNode* addnode_LL(LLNode*, TreeNode*);
 void print_LL(LLNode*);
 LLNode* deletenode_LL(LLNode*, TreeNode*);
 void destroy_LL(LLNode*);
 
 /* Funções sobre items. */
-Item* newitem(char*, char*);
+Item* newitem();
 void changeitemdesc(Item*, char*);
 void changeitemval(Item*, char*);
+Item* copyitem(Item*);
 int desc_itemcompare(Item*, Item*);
 int val_itemcompare(Item*, Item*);
 void deleteitem(Item*);
