@@ -1,4 +1,5 @@
 exe
 *.pdf
+*.zip
 test*
 vgcore.*
