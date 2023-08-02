@@ -21,7 +21,6 @@ int val_compare(TreeNode* A, TreeNode* B){
     return val_itemcompare(A->item, B->item);
 }
 
-/* !!!!!!!!!!! */
 /* Adds a children to the tree node parent with item's value and description. */
 TreeNode* addchildren(TreeNode* parent, Item* item){
     TreeNode* new_node = newnode();

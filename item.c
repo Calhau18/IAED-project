@@ -8,35 +8,25 @@ Item* newitem(){
     return Res;
 }
 
-/* !!!!!!!!!!! */
 /* Changes item's description to desc. */
 void changeitemdesc(Item* item, char* desc){
     item->description = (char*) realloc(item->description, sizeof(char)*(strlen(desc)+1));
     strcpy(item->description, desc);
 }
 
-/* !!!!!!!!!!! */
 /* Changes item's value to val. */
 void changeitemval(Item* item, char val[]){
     item->value = (char*) realloc(item->value, sizeof(char)*(strlen(val)+1));
     strcpy(item->value, val);
 }
 
-/* !!!!!!!!!!! */
 /* Returns a copy of item. */
 Item* copyitem(Item* item){
-    char* desc = item->description, * val = item->value;
-    Item* copy = (Item*) malloc(sizeof(Item));
-    if(desc == NULL) copy->description = NULL;
-    else{
-        copy->description = (char*) malloc(sizeof(char)*(strlen(desc)+1));
-        strcpy(copy->description, desc);
-    }
-    if(val == NULL) copy->value = NULL;
-    else{
-        copy->value = (char*) malloc(sizeof(char)*(strlen(val)+1));
-        strcpy(copy->value, val);
-    }
+    Item* copy = newitem();
+    if(item->description != NULL)
+        changeitemdesc(copy, item->description);
+    if(item->value != NULL)
+        changeitemval(copy, item->value);
     return copy;
 }
 

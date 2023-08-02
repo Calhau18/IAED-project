@@ -109,15 +109,6 @@ void print_AVL(AVLNode* root){
     print_AVL(root->right);
 }
 
-/* Finds the node with the smallest value in the AVL rooted at root, following
-   the comparison criterium for the AVL. */
-AVLNode* findmin_AVL(AVLNode* root){
-    while(root->left!=NULL){
-        root = root->left;
-    }
-    return root;
-}
-
 /* Finds the node with the biggest value in the AVL rooted at root, following
    the comparison criterium for the AVL. */
 AVLNode* findmax_AVL(AVLNode* root){
